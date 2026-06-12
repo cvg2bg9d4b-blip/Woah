@@ -3,221 +3,550 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pour Toi</title>
+    <title>Pour Toi - SAFE</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #0d0d0d;
-            font-family: 'Georgia', serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            background-color: #0b0c10;
             color: #fff;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        /* Bouton de démarrage */
-        #start-btn {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #ff4b5c, #ff6b8b);
-            border: none;
-            border-radius: 25px;
+        /* ÉCRAN D'ACCUEIL */
+        #welcome-screen {
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #66fcf1;
+            text-shadow: 0 0 15px rgba(102, 252, 241, 0.6);
+            margin-bottom: 30px;
+        }
+
+        .btn-main {
+            background: linear-gradient(45deg, #ff007f, #7928ca);
             color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 75, 92, 0.4);
-            transition: transform 0.2s;
-            z-index: 10;
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        #start-btn:active {
+        .btn-main:active {
             transform: scale(0.95);
         }
 
-        /* Conteneur de l'animation des cœurs */
-        #animation-container {
-            position: absolute;
+        /* ZONE DE JEU */
+        #game-container {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #45f3ff;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(69, 243, 255, 0.5);
+        }
+
+        p.instructions {
+            color: #c5a3ff;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        canvas {
+            background: #1f2833;
+            border: 3px solid #45f3ff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(69, 243, 255, 0.2);
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-game {
+            flex: 1;
+            background: #1f2833;
+            color: #45f3ff;
+            border: 2px solid #45f3ff;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-game:active {
+            background: #45f3ff;
+            color: #1f2833;
+        }
+
+        #btn-advance {
+            background: #00ffa3;
+            color: #0b0c10;
+            border: none;
+            box-shadow: 0 0 15px rgba(0, 255, 163, 0.4);
+        }
+
+        /* TABLEAU ET CLAVIER */
+        #decoder-screen {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .inventory {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .letter-count {
+            background: #1f2833;
+            border: 2px solid #ff007f;
+            border-radius: 10px;
+            padding: 10px 15px;
+            min-width: 60px;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
+        }
+
+        .letter-count.active-safe {
+            border-color: #00ffa3;
+            box-shadow: 0 0 10px rgba(0, 255, 163, 0.3);
+        }
+
+        .letter-count .char {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+            color: #fff;
+        }
+
+        .letter-count .val {
+            font-size: 1rem;
+            color: #00ffa3;
+        }
+
+        .word-display {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .letter-input-box {
+            width: 50px;
+            height: 65px;
+            border-bottom: 4px solid #45f3ff;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px #45f3ff;
+        }
+
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .key {
+            background: #1f2833;
+            color: white;
+            border: 1px solid #c5a3ff;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .key:active {
+            background: #c5a3ff;
+            color: #0b0c10;
+        }
+
+        .key-clear {
+            grid-column: span 4;
+            background: #ff4757;
+            border: none;
+            color: white;
+        }
+
+        /* PANNEAU DE RÉVÉLATION DE L'ACRONYME */
+        #acronym-panel {
+            display: none;
+            background: rgba(31, 40, 51, 0.95);
+            border: 2px solid #00ffa3;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            box-shadow: 0 0 20px rgba(0, 255, 163, 0.3);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .acronym-line {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .acronym-letter {
+            color: #ff007f;
+            font-size: 1.6rem;
+            text-shadow: 0 0 5px #ff007f;
+        }
+
+        .acronym-word {
+            color: #00ffa3;
+        }
+
+        #btn-validate-acronym {
+            width: 100%;
+            background: linear-gradient(45deg, #00ffa3, #00bfff);
+            color: #0b0c10;
+            font-size: 1.2rem;
+            padding: 14px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 255, 163, 0.4);
+        }
+
+        /* ÉCRAN FINAL & FEUX D'ARTIFICE */
+        #final-screen {
+            display: none;
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        #fireworks-canvas {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            display: none;
-            z-index: 5;
+            z-index: 2;
         }
 
-        /* Style des cœurs générés style emoji */
-        .heart {
+        #youtube-player {
             position: absolute;
-            bottom: -50px;
-            font-size: 24px;
-            color: #ff4b5c;
-            opacity: 0.9;
-            animation: flyAndFade 4s linear forwards;
-        }
-
-        @keyframes flyAndFade {
-            0% {
-                transform: translateY(0) translateX(0) scale(1);
-                opacity: 0.9;
-            }
-            50% {
-                opacity: 0.6;
-            }
-            100% {
-                /* Monte vers le haut et fond (disparaît et rétrécit) */
-                transform: translateY(-105vh) translateX(var(--random-x)) scale(0.3);
-                opacity: 0;
-            }
-        }
-
-        /* La lettre secrète */
-        #letter-container {
-            max-width: 90%;
-            width: 400px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 2s ease-in-out;
-            display: none;
-            z-index: 6;
-        }
-
-        #letter-container.show {
-            display: block;
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        h1 {
-            color: #ff6b8b;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-        }
-
-        p {
-            line-height: 1.6;
-            font-size: 1.1rem;
-            color: #e0e0e0;
-        }
-
-        /* Lecteur caché pour l'arrière-plan */
-        #yt-player {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
             width: 1px;
             height: 1px;
             opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <button id="start-btn">Ouvrir la surprise ❤️</button>
+    <div id="youtube-player"></div>
 
-    <div id="animation-container"></div>
+    <!-- ÉCRAN 1 : ACCUEIL -->
+    <div id="welcome-screen">
+        <h1>Une Surprise T'attend... 👑</h1>
+        <button class="btn-main" onclick="startAdventure()">Ouvrir la surprise</button>
+    </div>
 
-    <div id="letter-container">
-        <h1>Pour toi...</h1>
-        <p>
-            Écris ton texte ici. <br>S.A.F.E<br>
-            C'est le message personnalisé qui va se révéler tranquillement après la transition des cœurs.
+    <!-- ÉCRAN 2 : LE MINI-JEU DE MARCHE -->
+    <div id="game-container">
+        <h2>Jeu de mot</h2>
+        <p class="instructions">Fais avancer le bonhomme pour ramasser toutes les lettres dont tu as besoin !</p>
+        <canvas id="gameCanvas" width="350" height="150"></canvas>
+        
+        <div class="controls">
+            <button class="btn-game" id="btn-left">◀ Reculer</button>
+            <button class="btn-game" id="btn-right">Avancer ▶</button>
+        </div>
+        <button class="btn-game" id="btn-advance" onclick="goToDecoder()" style="width:100%; display:none;">Vérifier mon sac et Continuer ➔</button>
+    </div>
+
+    <!-- ÉCRAN 3 : DECODAGE ET EXPANSION ACRONYME -->
+    <div id="decoder-screen">
+        <h2>Décode le mot Secret</h2>
+        <p class="instructions">Utilise tes lettres ramassées pour écrire l'acronyme !</p>
+        
+        <div class="inventory">
+            <div class="letter-count active-safe"><span class="char">S</span><span class="val" id="count-S">0</span></div>
+            <div class="letter-count active-safe"><span class="char">A</span><span class="val" id="count-A">0</span></div>
+            <div class="letter-count active-safe"><span class="char">F</span><span class="val" id="count-F">0</span></div>
+            <div class="letter-count active-safe"><span class="char">E</span><span class="val" id="count-E">0</span></div>
+            <div class="letter-count"><span class="char">X</span><span class="val" id="count-X">0</span></div>
+        </div>
+
+        <div class="word-display">
+            <div class="letter-input-box" id="box-0"></div>
+            <div class="letter-input-box" id="box-1"></div>
+            <div class="letter-input-box" id="box-2"></div>
+            <div class="letter-input-box" id="box-3"></div>
+        </div>
+
+        <!-- Le Clavier Virtuel -->
+        <div id="keyboard-container">
+            <div class="keyboard">
+                <button class="key" onclick="pressKey('S')">S</button>
+                <button class="key" onclick="pressKey('A')">A</button>
+                <button class="key" onclick="pressKey('F')">F</button>
+                <button class="key" onclick="pressKey('E')">E</button>
+                <button class="key" onclick="pressKey('X')">X</button>
+                <button class="key key-clear" onclick="clearInput()">Effacer tout</button>
+            </div>
+        </div>
+
+        <!-- PANNEAU DE REVELATION DE L'ACRONYME (APPARAÎT QUAND SAFE EST ÉCRIT) -->
+        <div id="acronym-panel">
+            <p class="instructions" style="text-align: center; font-size: 1rem; margin-bottom: 15px; color:#fff;">✨ Signification Secrète Débloquée ✨</p>
+            <div class="acronym-line"><span class="acronym-letter">S</span> : <span class="acronym-word">SYLVANNA</span></div>
+            <div class="acronym-line"><span class="acronym-letter">A</span> : <span class="acronym-word">ANDERSON</span></div>
+            <div class="acronym-line"><span class="acronym-letter">F</span> : <span class="acronym-word">FALAINA</span></div>
+            <div class="acronym-line"><span class="acronym-letter">E</span> : <span class="acronym-word">EMILY</span></div>
+            
+            <button id="btn-validate-acronym" onclick="triggerFinalScreen()">Valider l'Acronyme ➔</button>
+        </div>
+    </div>
+
+    <!-- ÉCRAN FINAL -->
+    <div id="final-screen">
+        <h1 style="font-size: 3rem; color: #00ffa3; margin-bottom: 20px;">FÉLICITATIONS ! 🎉</h1>
+        <p style="font-size: 1.4rem; color: #ff007f; font-weight: bold; margin-bottom: 15px;">Le mot de notre alliance : SAFE ✨</p>
+        <p style="font-size: 1.1rem; color: #fff; max-width: 320px; margin: 0 auto; line-height: 1.6;">
+            Tu es ma protection et la clé de mon bonheur au quotidien. Regarde le ciel briller pour toi ! ❤️
         </p>
     </div>
 
-    <div id="yt-player"></div>
+    <canvas id="fireworks-canvas"></canvas>
 
     <script>
-        // L'identifiant de ta vidéo YouTube (HIMRA FT GAZO - STRIP)
-        const YOUTUBE_VIDEO_ID = 'XHq3IIop2_s';
-
-        const startBtn = document.getElementById('start-btn');
-        const animContainer = document.getElementById('animation-container');
-        const letterContainer = document.getElementById('letter-container');
-        
-        let player;
-
-        // Chargement de l'API YouTube
-        const tag = document.createElement('script');
+        // API YOUTUBE
+        let playerYT;
+        var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
+        var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        // Configuration du lecteur virtuel
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-player', {
-                videoId: YOUTUBE_VIDEO_ID,
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'fs': 0,
-                    'rel': 0
+            playerYT = new YT.Player('youtube-player', {
+                height: '1',
+                width: '1',
+                videoId: '5jaT_8hy3Vg',
+                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': '5jaT_8hy3Vg' }
+            });
+        }
+
+        // JEU DE PLATFORME
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let player = { x: 20, y: 110, width: 20, height: 30, speed: 5, color: '#00ffa3' };
+        let collectedLetters = { S: 0, A: 0, F: 0, E: 0, X: 0 };
+        
+        let items = [
+            { x: 70, y: 115, letter: 'S', collected: false },
+            { x: 120, y: 115, letter: 'X', collected: false },
+            { x: 170, y: 115, letter: 'A', collected: false },
+            { x: 230, y: 115, letter: 'F', collected: false },
+            { x: 290, y: 115, letter: 'E', collected: false }
+        ];
+
+        let rightPressed = false;
+        let leftPressed = false;
+
+        function startAdventure() {
+            if (playerYT && typeof playerYT.playVideo === 'function') { playerYT.playVideo(); }
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            gameLoop();
+        }
+
+        document.getElementById('btn-right').addEventListener('touchstart', () => rightPressed = true);
+        document.getElementById('btn-right').addEventListener('touchend', () => rightPressed = false);
+        document.getElementById('btn-left').addEventListener('touchstart', () => leftPressed = true);
+        document.getElementById('btn-left').addEventListener('touchend', () => leftPressed = false);
+
+        function gameLoop() {
+            if (rightPressed && player.x < canvas.width - player.width) player.x += player.speed;
+            if (leftPressed && player.x > 0) player.x -= player.speed;
+
+            items.forEach(item => {
+                if (!item.collected && player.x + player.width > item.x && player.x < item.x + 15) {
+                    item.collected = true;
+                    collectedLetters[item.letter]++;
+                }
+            });
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#45f3ff';
+            ctx.fillRect(0, 140, canvas.width, 10);
+
+            items.forEach(item => {
+                if (!item.collected) {
+                    ctx.fillStyle = item.letter === 'X' ? '#ff4757' : '#ff007f';
+                    ctx.font = 'bold 16px sans-serif';
+                    ctx.fillText(item.letter, item.x, item.y);
+                    ctx.fillStyle = 'rgba(255, 0, 127, 0.2)';
+                    ctx.beginPath(); ctx.arc(item.x + 6, 138, 8, 0, Math.PI * 2); ctx.fill();
+                }
+            });
+
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height - 5);
+            ctx.beginPath(); ctx.arc(player.x + 10, player.y - 6, 8, 0, Math.PI * 2); ctx.fill();
+
+            let allPicked = items.every(i => i.collected);
+            if (allPicked) { document.getElementById('btn-advance').style.display = 'block'; }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // CLAVIER ET SYSTEME DE SAISIE
+        let currentInput = [];
+        
+        function goToDecoder() {
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('decoder-screen').style.display = 'block';
+            updateInventoryUI();
+        }
+
+        function updateInventoryUI() {
+            document.getElementById('count-S').innerText = collectedLetters.S;
+            document.getElementById('count-A').innerText = collectedLetters.A;
+            document.getElementById('count-F').innerText = collectedLetters.F;
+            document.getElementById('count-E').innerText = collectedLetters.E;
+            document.getElementById('count-X').innerText = collectedLetters.X;
+        }
+
+        function pressKey(letter) {
+            if (currentInput.length < 4) {
+                if (collectedLetters[letter] > 0) {
+                    collectedLetters[letter]--;
+                    currentInput.push(letter);
+                    updateInventoryUI();
+                    renderWordBoxes();
+                    checkWinningCondition();
+                }
+            }
+        }
+
+        function clearInput() {
+            currentInput.forEach(letter => { collectedLetters[letter]++; });
+            currentInput = [];
+            document.getElementById('acronym-panel').style.display = 'none';
+            document.getElementById('keyboard-container').style.display = 'block';
+            updateInventoryUI();
+            renderWordBoxes();
+        }
+
+        function renderWordBoxes() {
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`box-${i}`).innerText = currentInput[i] ? currentInput[i] : "";
+            }
+        }
+
+        function checkWinningCondition() {
+            if (currentInput.join('') === 'SAFE') {
+                // Fait apparaître le panneau explicatif et masque le clavier pour forcer la validation
+                document.getElementById('keyboard-container').style.display = 'none';
+                document.getElementById('acronym-panel').style.display = 'block';
+            }
+        }
+
+        function triggerFinalScreen() {
+            document.getElementById('decoder-screen').style.display = 'none';
+            document.getElementById('final-screen').style.display = 'block';
+            initFireworks();
+        }
+
+        // FEUX D'ARTIFICE
+        const fwCanvas = document.getElementById('fireworks-canvas');
+        const fwCtx = fwCanvas.getContext('2d');
+        let particles = [];
+
+        function initFireworks() {
+            fwCanvas.width = window.innerWidth;
+            fwCanvas.height = window.innerHeight;
+            animateFireworks();
+            setInterval(spawnFirework, 600);
+        }
+
+        function spawnFirework() {
+            let x = Math.random() * fwCanvas.width;
+            let y = Math.random() * (fwCanvas.height * 0.6);
+            let colors = ['#00ffa3', '#ff007f', '#45f3ff', '#ffeb3b', '#9c27b0'];
+            let chosenColor = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: x, y: y,
+                    dx: (Math.random() - 0.5) * 7, dy: (Math.random() - 0.5) * 7,
+                    radius: Math.random() * 3 + 1, color: chosenColor, alpha: 1,
+                    decay: Math.random() * 0.015 + 0.01
+                });
+            }
+        }
+
+        function animateFireworks() {
+            requestAnimationFrame(animateFireworks);
+            fwCtx.fillStyle = 'rgba(11, 12, 16, 0.2)';
+            fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+            particles.forEach((p, index) => {
+                p.x += p.dx; p.y += p.dy; p.dy += 0.04; p.alpha -= p.decay;
+                if (p.alpha <= 0) { particles.splice(index, 1); } 
+                else {
+                    fwCtx.save(); fwCtx.globalAlpha = p.alpha; fwCtx.fillStyle = p.color;
+                    fwCtx.beginPath(); fwCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); fwCtx.fill();
+                    fwCtx.restore();
                 }
             });
         }
 
-        startBtn.addEventListener('click', () => {
-            // Cacher le bouton de départ
-            startBtn.style.display = 'none';
-            animContainer.style.display = 'block';
-
-            // Lancer le son en arrière-plan
-            if (player && typeof player.playVideo === 'function') {
-                player.playVideo();
-            }
-
-            // Génération des cœurs (un toutes les 70ms)
-            const heartInterval = setInterval(createHeart, 70);
-
-            // Transition : Arrêt des cœurs et affichage de la lettre après 3.5 secondes
-            var transitionTimeout = setTimeout(() => {
-                clearInterval(heartInterval);
-                letterContainer.style.display = 'block';
-                setTimeout(() => {
-                    letterContainer.classList.add('show');
-                }, 100);
-            }, 3500); 
+        window.addEventListener('resize', () => {
+            fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight;
         });
-
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerText = '❤️'; 
-
-            // Position de départ aléatoire sur la largeur
-            heart.style.left = Math.random() * 100 + 'vw';
-            
-            // Taille aléatoire style emoji
-            heart.style.fontSize = Math.random() * 12 + 20 + 'px';
-
-            // Dérive latérale pendant la montée
-            const randomX = (Math.random() - 0.5) * 200; 
-            heart.style.setProperty('--random-x', `${randomX}px`);
-
-            // Vitesse de montée aléatoire
-            heart.style.animationDuration = Math.random() * 1.5 + 3 + 's';
-
-            animContainer.appendChild(heart);
-
-            // Nettoyage pour préserver la mémoire du téléphone
-            setTimeout(() => {
-                heart.remove();
-            }, 4500);
-        }
     </script>
 </body>
 </html>
