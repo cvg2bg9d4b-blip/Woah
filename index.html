@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pour Toi - SAFE</title>
+    <title>Mini jeu - SAFE</title>
     <style>
         * {
             box-sizing: border-box;
@@ -115,6 +115,15 @@
             width: 100%;
             padding: 15px;
             font-size: 1.1rem;
+        }
+
+        /* LECTEUR AUDIO SÉCURISÉ POUR IPHONE */
+        #music-box {
+            margin: 15px 0;
+            background: #1f2833;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px dashed #45f3ff;
         }
 
         /* TABLEAU ET CLAVIER */
@@ -255,28 +264,27 @@
             pointer-events: none;
             z-index: 2;
         }
-
-        #youtube-player {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
 
-    <div id="youtube-player"></div>
-
+    <!-- ÉCRAN 1 : ACCUEIL -->
     <div id="welcome-screen">
         <h1>Une Surprise T'attend... 👑</h1>
         <button class="btn-main" onclick="startAdventure()">Ouvrir la surprise</button>
     </div>
 
+    <!-- ÉCRAN 2 : LE MINI-JEU -->
     <div id="game-container">
         <h2>Jeu de mot</h2>
-        <p class="instructions">Maintiens les boutons du bas pour faire marcher le bonhomme et ramasser les lettres !</p>
+        
+        <!-- Intégration audio directe (plus de blocage iOS) -->
+        <div id="music-box">
+            <p style="font-size:0.8rem; color:#45f3ff; margin-bottom:5px;">🎵 Active l'ambiance si besoin :</p>
+            <audio id="happy-audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" controls loop style="width:100%; max-width:280px; height:30px;"></audio>
+        </div>
+
+        <p class="instructions">Maintiens les boutons pour guider le bonhomme et attraper toutes les lettres !</p>
         <canvas id="gameCanvas" width="340" height="150"></canvas>
         
         <div class="controls">
@@ -286,6 +294,7 @@
         <button class="btn-game" id="btn-advance" onclick="goToDecoder()">Vérifier mon sac et Continuer ➔</button>
     </div>
 
+    <!-- ÉCRAN 3 : DECODAGE -->
     <div id="decoder-screen">
         <h2>Décode le mot Secret</h2>
         <p class="instructions">Tappe sur les lettres du clavier pour composer l'acronyme !</p>
@@ -327,6 +336,7 @@
         </div>
     </div>
 
+    <!-- ÉCRAN FINAL -->
     <div id="final-screen">
         <h1 style="font-size: 2.8rem; color: #00ffa3; margin-bottom: 20px;">FÉLICITATIONS ! 🎉</h1>
         <p style="font-size: 1.3rem; color: #ff007f; font-weight: bold; margin-bottom: 15px;">Le mot de notre alliance : SAFE ✨</p>
@@ -338,25 +348,9 @@
     <canvas id="fireworks-canvas"></canvas>
 
     <script>
-        // API YOUTUBE - VERSION MUSIQUE HAPPY
-        let playerYT;
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        function onYouTubeIframeAPIReady() {
-            playerYT = new YT.Player('youtube-player', {
-                height: '1',
-                width: '1',
-                videoId: 'ZbZSe6N_BXs', // Code YouTube pour Happy
-                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': 'ZbZSe6N_BXs' }
-            });
-        }
-
-        // MOTEUR DU JEU RE-STYLISÉ ET SÉCURISÉ
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const audio = document.getElementById('happy-audio');
 
         let player = { x: 20, y: 110, width: 20, height: 30, speed: 4, color: '#00ffa3' };
         let collectedLetters = { S: 0, A: 0, F: 0, E: 0, X: 0 };
@@ -373,16 +367,20 @@
         let leftPressed = false;
 
         function startAdventure() {
-            if (playerYT && typeof playerYT.playVideo === 'function') { playerYT.playVideo(); }
+            // Lecture audio standardisée pour forcer l'autorisation iOS
+            if(audio) {
+                audio.play().catch(e => console.log("Attente interaction utilisateur"));
+            }
+            
             document.getElementById('welcome-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
             
-            // DESSIN IMMÉDIAT ET SÉCURISÉ DES ÉLÉMENTS DU CANVAS
+            // Lancement immédiat et forcé du dessin du jeu
             drawGame();
             gameLoop();
         }
 
-        // Configuration boutons tactiles
+        // Événements tactiles mobiles
         const btnRight = document.getElementById('btn-right');
         const btnLeft = document.getElementById('btn-left');
 
@@ -399,11 +397,11 @@
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Dessin du sol bleu néon
+            // Sol bleu néon
             ctx.fillStyle = '#45f3ff';
             ctx.fillRect(0, 140, canvas.width, 10);
 
-            // Dessin des lettres
+            // Lettres roses
             items.forEach(item => {
                 if (!item.collected) {
                     ctx.fillStyle = item.letter === 'X' ? '#ff4757' : '#ff007f';
@@ -415,7 +413,7 @@
                 }
             });
 
-            // Dessin du joueur (Le petit bonhomme)
+            // Bonhomme vert
             ctx.fillStyle = player.color;
             ctx.fillRect(player.x, player.y, player.width, player.height - 5);
             ctx.beginPath(); ctx.arc(player.x + 10, player.y - 6, 8, 0, Math.PI * 2); ctx.fill();
@@ -446,7 +444,7 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // PHASE 3 : DECODAGE
+        // PHASE DECODAGE
         let currentInput = [];
         
         function goToDecoder() {
@@ -503,7 +501,7 @@
             initFireworks();
         }
 
-        // SYSTEME FEUX D'ARTIFICE
+        // FEUX D'ARTIFICE
         const fwCanvas = document.getElementById('fireworks-canvas');
         const fwCtx = fwCanvas.getContext('2d');
         let particles = [];
