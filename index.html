@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pour Toi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        /* Bouton de démarrage */
+        #start-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #ff4b5c, #ff6b8b);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 75, 92, 0.4);
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+
+        #start-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Conteneur de l'animation des cœurs */
+        #animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: none;
+            z-index: 5;
+        }
+
+        /* Style des cœurs générés style emoji */
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 24px;
+            color: #ff4b5c;
+            opacity: 0.9;
+            animation: flyAndFade 4s linear forwards;
+        }
+
+        @keyframes flyAndFade {
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                /* Monte vers le haut et fond (disparaît et rétrécit) */
+                transform: translateY(-105vh) translateX(var(--random-x)) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        /* La lettre secrète */
+        #letter-container {
+            max-width: 90%;
+            width: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 2s ease-in-out;
+            display: none;
+            z-index: 6;
+        }
+
+        #letter-container.show {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h1 {
+            color: #ff6b8b;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #e0e0e0;
+        }
+
+        /* Lecteur caché pour l'arrière-plan */
+        #yt-player {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="start-btn">Ouvrir la surprise ❤️</button>
+
+    <div id="animation-container"></div>
+
+    <div id="letter-container">
+        <h1>Pour toi...</h1>
+        <p>
+            Écris ton texte ici. <br>S.A.F.E<br>
+            C'est le message personnalisé qui va se révéler tranquillement après la transition des cœurs.
+        </p>
+    </div>
+
+    <div id="yt-player"></div>
+
+    <script>
+        // L'identifiant de ta vidéo YouTube (HIMRA FT GAZO - STRIP)
+        const YOUTUBE_VIDEO_ID = 'XHq3IIop2_s';
+
+        const startBtn = document.getElementById('start-btn');
+        const animContainer = document.getElementById('animation-container');
+        const letterContainer = document.getElementById('letter-container');
+        
+        let player;
+
+        // Chargement de l'API YouTube
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Configuration du lecteur virtuel
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                videoId: YOUTUBE_VIDEO_ID,
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'rel': 0
+                }
+            });
+        }
+
+        startBtn.addEventListener('click', () => {
+            // Cacher le bouton de départ
+            startBtn.style.display = 'none';
+            animContainer.style.display = 'block';
+
+            // Lancer le son en arrière-plan
+            if (player && typeof player.playVideo === 'function') {
+                player.playVideo();
+            }
+
+            // Génération des cœurs (un toutes les 70ms)
+            const heartInterval = setInterval(createHeart, 70);
+
+            // Transition : Arrêt des cœurs et affichage de la lettre après 3.5 secondes
+            var transitionTimeout = setTimeout(() => {
+                clearInterval(heartInterval);
+                letterContainer.style.display = 'block';
+                setTimeout(() => {
+                    letterContainer.classList.add('show');
+                }, 100);
+            }, 3500); 
+        });
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerText = '❤️'; 
+
+            // Position de départ aléatoire sur la largeur
+            heart.style.left = Math.random() * 100 + 'vw';
+            
+            // Taille aléatoire style emoji
+            heart.style.fontSize = Math.random() * 12 + 20 + 'px';
+
+            // Dérive latérale pendant la montée
+            const randomX = (Math.random() - 0.5) * 200; 
+            heart.style.setProperty('--random-x', `${randomX}px`);
+
+            // Vitesse de montée aléatoire
+            heart.style.animationDuration = Math.random() * 1.5 + 3 + 's';
+
+            animContainer.appendChild(heart);
+
+            // Nettoyage pour préserver la mémoire du téléphone
+            setTimeout(() => {
+                heart.remove();
+            }, 4500);
+        }
+    </script>
+</body>
+</html>
