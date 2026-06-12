@@ -22,12 +22,12 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 20px;
         }
 
         /* ÉCRAN D'ACCUEIL */
         #welcome-screen {
             text-align: center;
+            padding: 20px;
             display: block;
         }
 
@@ -50,72 +50,72 @@
             box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
         }
 
-        /* ZONE DE JEU VERSION ULTRA-COMPATIBLE */
+        /* ZONE DE JEU */
         #game-container {
             display: none;
             width: 100%;
             max-width: 400px;
+            padding: 15px;
             text-align: center;
         }
 
         h2 {
             color: #45f3ff;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-size: 1.8rem;
             text-shadow: 0 0 10px rgba(69, 243, 255, 0.5);
         }
 
         p.instructions {
             color: #c5a3ff;
-            font-size: 1rem;
-            margin-bottom: 25px;
-            line-height: 1.4;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
         }
 
-        /* Zone de collecte simplifiée sans canvas */
-        .grid-letters {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .letter-btn {
+        canvas {
             background: #1f2833;
-            color: #ff007f;
+            border: 3px solid #45f3ff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(69, 243, 255, 0.3);
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-game {
+            flex: 1;
+            background: #1f2833;
+            color: #45f3ff;
             border: 2px solid #45f3ff;
-            border-radius: 15px;
-            padding: 25px 10px;
-            font-size: 1.8rem;
+            padding: 20px;
+            font-size: 1.3rem;
             font-weight: bold;
-            box-shadow: 0 0 10px rgba(69, 243, 255, 0.2);
+            border-radius: 12px;
             cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        .letter-btn.collected {
-            background: #00ffa3;
-            color: #0b0c10;
-            border-color: #00ffa3;
-            box-shadow: 0 0 15px rgba(0, 255, 163, 0.4);
-            transform: scale(0.95);
-            opacity: 0.8;
-        }
-
-        .letter-btn.trap {
-            color: #ff4757;
+        .btn-game:active {
+            background: #45f3ff;
+            color: #1f2833;
         }
 
         #btn-advance {
-            background: linear-gradient(45deg, #00ffa3, #00bfff);
+            background: #00ffa3;
             color: #0b0c10;
             border: none;
             box-shadow: 0 0 15px rgba(0, 255, 163, 0.5);
             display: none;
             width: 100%;
-            padding: 16px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 12px;
+            padding: 15px;
+            font-size: 1.1rem;
         }
 
         /* TABLEAU ET CLAVIER */
@@ -124,6 +124,7 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
+            padding: 15px;
         }
 
         .inventory {
@@ -197,9 +198,6 @@
             background: #ff4757;
             border: none;
             padding: 12px;
-            font-weight: bold;
-            border-radius: 8px;
-            color: white;
         }
 
         /* PANNEAU ACRONYME */
@@ -246,6 +244,7 @@
             display: none;
             text-align: center;
             z-index: 10;
+            padding: 20px;
         }
 
         #fireworks-canvas {
@@ -267,24 +266,22 @@
     </div>
 
     <div id="game-container">
-        <h2>Chasse aux Lettres</h2>
-        <p class="instructions">Trouve et clique sur les bonnes lettres pour composer le mot secret ! Attention aux pièges.</p>
+        <h2>Jeu de mot</h2>
         
-        <div class="grid-letters">
-            <button class="letter-btn" id="btn-L0" onclick="collectLetter('S', 'L0')">S</button>
-            <button class="letter-btn trap" id="btn-L1" onclick="collectLetter('X', 'L1')">X</button>
-            <button class="letter-btn" id="btn-L2" onclick="collectLetter('A', 'L2')">A</button>
-            <button class="letter-btn trap" id="btn-L3" onclick="collectLetter('X', 'L3')">X</button>
-            <button class="letter-btn" id="btn-L4" onclick="collectLetter('F', 'L4')">F</button>
-            <button class="letter-btn" id="btn-L5" onclick="collectLetter('E', 'L5')">E</button>
+        <p class="instructions">Maintiens les boutons du bas pour faire marcher le bonhomme !</p>
+        
+        <canvas id="gameCanvas" width="340" height="150"></canvas>
+        
+        <div class="controls">
+            <button class="btn-game" id="btn-left">◀ Reculer</button>
+            <button class="btn-game" id="btn-right">Avancer ▶</button>
         </div>
-
-        <button id="btn-advance" onclick="goToDecoder()">Vérifier mon sac et Continuer ➔</button>
+        <button class="btn-game" id="btn-advance" onclick="goToDecoder()">Vérifier mon sac et Continuer ➔</button>
     </div>
 
     <div id="decoder-screen">
         <h2>Décode le mot Secret</h2>
-        <p class="instructions">Tappe sur les lettres récoltées pour composer l'acronyme !</p>
+        <p class="instructions">Tappe sur les lettres du clavier pour composer l'acronyme !</p>
         
         <div class="inventory">
             <div class="letter-count active-safe"><span class="char">S</span><span class="val" id="count-S">0</span></div>
@@ -334,35 +331,130 @@
     <canvas id="fireworks-canvas"></canvas>
 
     <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Utilisation de l'API Audio Web native pour forcer le décodage sonore sur iPhone
+        let audioCtx = null;
+        let audioBuffer = null;
+        let audioSource = null;
+
+        let player = { x: 20, y: 110, width: 20, height: 30, speed: 4, color: '#00ffa3' };
         let collectedLetters = { S: 0, A: 0, F: 0, E: 0, X: 0 };
-        let validCollected = { S: false, A: false, F: false, E: false };
+        
+        let items = [
+            { x: 60, y: 115, letter: 'S', collected: false },
+            { x: 120, y: 115, letter: 'X', collected: false },
+            { x: 170, y: 115, letter: 'A', collected: false },
+            { x: 230, y: 115, letter: 'F', collected: false },
+            { x: 280, y: 115, letter: 'E', collected: false }
+        ];
 
-        function startAdventure() {
-            document.getElementById('welcome-screen').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
-        }
+        let rightPressed = false;
+        let leftPressed = false;
+        let gameLoopInterval = null;
 
-        function collectLetter(letter, btnId) {
-            const btn = document.getElementById('btn-' + btnId);
-            if (!btn.classList.contains('collected')) {
-                btn.classList.add('collected');
-                collectedLetters[letter]++;
-                
-                if (letter !== 'X') {
-                    validCollected[letter] = true;
+        // Pré-téléchargement de la musique de manière sécurisée pour iOS
+        fetch('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3')
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => {
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                return audioCtx.decodeAudioBuffer ? audioCtx.decodeAudioBuffer(arrayBuffer) : audioCtx.decodeAudioData(arrayBuffer);
+            })
+            .then(buffer => { audioBuffer = buffer; })
+            .catch(e => console.log("Chargement audio en attente"));
+
+        function playMusic() {
+            if (audioCtx && audioBuffer && !audioSource) {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
                 }
-
-                // Vérifier si toutes les vraies lettres du mot SAFE sont prises
-                if (validCollected.S && validCollected.A && validCollected.F && validCollected.E) {
-                    document.getElementById('btn-advance').style.display = 'block';
-                }
+                audioSource = audioCtx.createBufferSource();
+                audioSource.buffer = audioBuffer;
+                audioSource.loop = true;
+                audioSource.connect(audioCtx.destination);
+                audioSource.start(0);
             }
         }
 
-        // PHASE DÉCODAGE
+        function startAdventure() {
+            // Activer la musique grâce au clic physique de l'utilisateur
+            playMusic();
+
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            
+            canvas.width = 340;
+            canvas.height = 150;
+            
+            if(!gameLoopInterval) {
+                gameLoopInterval = setInterval(gameTick, 1000 / 60);
+            }
+        }
+
+        const btnRight = document.getElementById('btn-right');
+        const btnLeft = document.getElementById('btn-left');
+
+        btnRight.addEventListener('touchstart', function(e) { e.preventDefault(); rightPressed = true; }, {passive: false});
+        btnRight.addEventListener('touchend', function(e) { e.preventDefault(); rightPressed = false; }, {passive: false});
+        btnLeft.addEventListener('touchstart', function(e) { e.preventDefault(); leftPressed = true; }, {passive: false});
+        btnLeft.addEventListener('touchend', function(e) { e.preventDefault(); leftPressed = false; }, {passive: false});
+
+        btnRight.addEventListener('mousedown', function() { rightPressed = true; });
+        btnRight.addEventListener('mouseup', function() { rightPressed = false; });
+        btnLeft.addEventListener('mousedown', function() { leftPressed = true; });
+        btnLeft.addEventListener('mouseup', function() { leftPressed = false; });
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Sol
+            ctx.fillStyle = '#45f3ff';
+            ctx.fillRect(0, 140, canvas.width, 10);
+
+            // Lettres
+            items.forEach(function(item) {
+                if (!item.collected) {
+                    ctx.fillStyle = (item.letter === 'X') ? '#ff4757' : '#ff007f';
+                    ctx.font = 'bold 18px sans-serif';
+                    ctx.fillText(item.letter, item.x, item.y);
+                    
+                    ctx.fillStyle = 'rgba(255, 0, 127, 0.15)';
+                    ctx.beginPath(); ctx.arc(item.x + 6, 135, 8, 0, Math.PI * 2); ctx.fill();
+                }
+            });
+
+            // Bonhomme vert qui marche
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height - 5);
+            ctx.beginPath(); ctx.arc(player.x + 10, player.y - 4, 8, 0, Math.PI * 2); ctx.fill();
+        }
+
+        function gameTick() {
+            if (rightPressed && player.x < (canvas.width - player.width)) { player.x += player.speed; }
+            if (leftPressed && player.x > 0) { player.x -= player.speed; }
+
+            items.forEach(function(item) {
+                if (!item.collected && (player.x + player.width > item.x) && (player.x < item.x + 15)) {
+                    item.collected = true;
+                    collectedLetters[item.letter]++;
+                }
+            });
+
+            drawGame();
+
+            let allPicked = items.every(function(i) { return i.collected; });
+            if (allPicked) { 
+                document.getElementById('btn-advance').style.display = 'block'; 
+            }
+        }
+
+        // PHASE DECODAGE
         let currentInput = [];
         
         function goToDecoder() {
+            if(gameLoopInterval) { clearInterval(gameLoopInterval); }
             document.getElementById('game-container').style.display = 'none';
             document.getElementById('decoder-screen').style.display = 'block';
             updateInventoryUI();
@@ -416,7 +508,7 @@
             initFireworks();
         }
 
-        // FEUX D'ARTIFICE EN JAVASCRIPT
+        // FEUX D'ARTIFICE
         const fwCanvas = document.getElementById('fireworks-canvas');
         const fwCtx = fwCanvas.getContext('2d');
         let particles = [];
@@ -451,9 +543,8 @@
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
                 p.x += p.dx; p.y += p.dy; p.dy += 0.04; p.alpha -= p.decay;
-                if (p.alpha <= 0) { 
-                    particles.splice(i, 1); 
-                } else {
+                if (p.alpha <= 0) { particles.splice(i, 1); } 
+                else {
                     fwCtx.save(); fwCtx.globalAlpha = p.alpha; fwCtx.fillStyle = p.color;
                     fwCtx.beginPath(); fwCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); fwCtx.fill();
                     fwCtx.restore();
