@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Jeu SAFE</title>
+    <title>Pour Toi - SAFE</title>
     <style>
         * {
             box-sizing: border-box;
@@ -30,7 +30,7 @@
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             color: #66fcf1;
             text-shadow: 0 0 15px rgba(102, 252, 241, 0.6);
             margin-bottom: 30px;
@@ -40,17 +40,13 @@
             background: linear-gradient(45deg, #ff007f, #7928ca);
             color: white;
             border: none;
-            padding: 15px 35px;
-            font-size: 1.2rem;
+            padding: 18px 40px;
+            font-size: 1.3rem;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-main:active {
-            transform: scale(0.95);
+            transition: transform 0.2s;
         }
 
         /* ZONE DE JEU */
@@ -71,7 +67,7 @@
 
         p.instructions {
             color: #c5a3ff;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             margin-bottom: 15px;
         }
 
@@ -79,16 +75,16 @@
             background: #1f2833;
             border: 3px solid #45f3ff;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(69, 243, 255, 0.2);
+            box-shadow: 0 0 20px rgba(69, 243, 255, 0.3);
             display: block;
-            margin: 0 auto 15px auto;
+            margin: 0 auto 20px auto;
         }
 
         .controls {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .btn-game {
@@ -96,11 +92,13 @@
             background: #1f2833;
             color: #45f3ff;
             border: 2px solid #45f3ff;
-            padding: 12px;
-            font-size: 1rem;
+            padding: 18px;
+            font-size: 1.2rem;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .btn-game:active {
@@ -112,7 +110,11 @@
             background: #00ffa3;
             color: #0b0c10;
             border: none;
-            box-shadow: 0 0 15px rgba(0, 255, 163, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 163, 0.5);
+            display: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
         }
 
         /* TABLEAU ET CLAVIER */
@@ -127,7 +129,7 @@
         .inventory {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             margin-bottom: 25px;
         }
 
@@ -135,21 +137,18 @@
             background: #1f2833;
             border: 2px solid #ff007f;
             border-radius: 10px;
-            padding: 10px 15px;
-            min-width: 60px;
-            box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
+            padding: 10px 12px;
+            min-width: 55px;
         }
 
         .letter-count.active-safe {
             border-color: #00ffa3;
-            box-shadow: 0 0 10px rgba(0, 255, 163, 0.3);
         }
 
         .letter-count .char {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: bold;
             display: block;
-            color: #fff;
         }
 
         .letter-count .val {
@@ -170,17 +169,15 @@
             border-bottom: 4px solid #45f3ff;
             font-size: 2rem;
             font-weight: bold;
-            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-shadow: 0 0 10px #45f3ff;
         }
 
         .keyboard {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
             margin-bottom: 15px;
         }
 
@@ -188,27 +185,21 @@
             background: #1f2833;
             color: white;
             border: 1px solid #c5a3ff;
-            padding: 15px;
+            padding: 15px 5px;
             font-size: 1.2rem;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.1s;
-        }
-
-        .key:active {
-            background: #c5a3ff;
-            color: #0b0c10;
         }
 
         .key-clear {
-            grid-column: span 4;
+            grid-column: span 5;
             background: #ff4757;
             border: none;
-            color: white;
+            padding: 12px;
         }
 
-        /* PANNEAU DE RÉVÉLATION DE L'ACRONYME */
+        /* PANNEAU ACRONYME */
         #acronym-panel {
             display: none;
             background: rgba(31, 40, 51, 0.95);
@@ -218,20 +209,17 @@
             margin-top: 20px;
             text-align: left;
             box-shadow: 0 0 20px rgba(0, 255, 163, 0.3);
-            animation: fadeIn 0.5s ease;
         }
 
         .acronym-line {
             font-size: 1.3rem;
             margin-bottom: 12px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
         .acronym-letter {
             color: #ff007f;
-            font-size: 1.6rem;
-            text-shadow: 0 0 5px #ff007f;
+            font-size: 1.5rem;
         }
 
         .acronym-word {
@@ -248,11 +236,9 @@
             border: none;
             border-radius: 8px;
             font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 255, 163, 0.4);
         }
 
-        /* ÉCRAN FINAL & FEUX D'ARTIFICE */
+        /* ÉCRAN FINAL */
         #final-screen {
             display: none;
             text-align: center;
@@ -277,40 +263,32 @@
             opacity: 0;
             pointer-events: none;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
 
     <div id="youtube-player"></div>
 
-    <!-- ÉCRAN 1 : ACCUEIL -->
     <div id="welcome-screen">
         <h1>Une Surprise T'attend... 👑</h1>
         <button class="btn-main" onclick="startAdventure()">Ouvrir la surprise</button>
     </div>
 
-    <!-- ÉCRAN 2 : LE MINI-JEU DE MARCHE -->
     <div id="game-container">
         <h2>Jeu de mot</h2>
-        <p class="instructions">Fais avancer le bonhomme pour ramasser toutes les lettres dont tu as besoin !</p>
-        <canvas id="gameCanvas" width="350" height="150"></canvas>
+        <p class="instructions">Maintiens les boutons du bas pour faire marcher le bonhomme et ramasser les lettres !</p>
+        <canvas id="gameCanvas" width="340" height="150"></canvas>
         
         <div class="controls">
             <button class="btn-game" id="btn-left">◀ Reculer</button>
             <button class="btn-game" id="btn-right">Avancer ▶</button>
         </div>
-        <button class="btn-game" id="btn-advance" onclick="goToDecoder()" style="width:100%; display:none;">Vérifier mon sac et Continuer ➔</button>
+        <button class="btn-game" id="btn-advance" onclick="goToDecoder()">Vérifier mon sac et Continuer ➔</button>
     </div>
 
-    <!-- ÉCRAN 3 : DECODAGE ET EXPANSION ACRONYME -->
     <div id="decoder-screen">
         <h2>Décode le mot Secret</h2>
-        <p class="instructions">Utilise tes lettres ramassées pour écrire l'acronyme !</p>
+        <p class="instructions">Tappe sur les lettres du clavier pour composer l'acronyme !</p>
         
         <div class="inventory">
             <div class="letter-count active-safe"><span class="char">S</span><span class="val" id="count-S">0</span></div>
@@ -327,7 +305,6 @@
             <div class="letter-input-box" id="box-3"></div>
         </div>
 
-        <!-- Le Clavier Virtuel -->
         <div id="keyboard-container">
             <div class="keyboard">
                 <button class="key" onclick="pressKey('S')">S</button>
@@ -339,7 +316,6 @@
             </div>
         </div>
 
-        <!-- PANNEAU DE REVELATION DE L'ACRONYME (APPARAÎT QUAND SAFE EST ÉCRIT) -->
         <div id="acronym-panel">
             <p class="instructions" style="text-align: center; font-size: 1rem; margin-bottom: 15px; color:#fff;">✨ Signification Secrète Débloquée ✨</p>
             <div class="acronym-line"><span class="acronym-letter">S</span> : <span class="acronym-word">SYLVANNA</span></div>
@@ -351,10 +327,9 @@
         </div>
     </div>
 
-    <!-- ÉCRAN FINAL -->
     <div id="final-screen">
-        <h1 style="font-size: 3rem; color: #00ffa3; margin-bottom: 20px;">FÉLICITATIONS ! 🎉</h1>
-        <p style="font-size: 1.4rem; color: #ff007f; font-weight: bold; margin-bottom: 15px;">Le mot de notre alliance : SAFE ✨</p>
+        <h1 style="font-size: 2.8rem; color: #00ffa3; margin-bottom: 20px;">FÉLICITATIONS ! 🎉</h1>
+        <p style="font-size: 1.3rem; color: #ff007f; font-weight: bold; margin-bottom: 15px;">Le mot de notre alliance : SAFE ✨</p>
         <p style="font-size: 1.1rem; color: #fff; max-width: 320px; margin: 0 auto; line-height: 1.6;">
             Tu es ma protection et la clé de mon bonheur au quotidien. Regarde le ciel briller pour toi ! ❤️
         </p>
@@ -363,7 +338,7 @@
     <canvas id="fireworks-canvas"></canvas>
 
     <script>
-        // API YOUTUBE
+        // API YOUTUBE - VERSION MUSIQUE HAPPY
         let playerYT;
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
@@ -374,24 +349,24 @@
             playerYT = new YT.Player('youtube-player', {
                 height: '1',
                 width: '1',
-                videoId: '5jaT_8hy3Vg',
-                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': '5jaT_8hy3Vg' }
+                videoId: 'ZbZSe6N_BXs', // Code YouTube pour Happy
+                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': 'ZbZSe6N_BXs' }
             });
         }
 
-        // JEU DE PLATFORME
+        // MOTEUR DU JEU RE-STYLISÉ ET SÉCURISÉ
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let player = { x: 20, y: 110, width: 20, height: 30, speed: 5, color: '#00ffa3' };
+        let player = { x: 20, y: 110, width: 20, height: 30, speed: 4, color: '#00ffa3' };
         let collectedLetters = { S: 0, A: 0, F: 0, E: 0, X: 0 };
         
         let items = [
-            { x: 70, y: 115, letter: 'S', collected: false },
+            { x: 60, y: 115, letter: 'S', collected: false },
             { x: 120, y: 115, letter: 'X', collected: false },
             { x: 170, y: 115, letter: 'A', collected: false },
             { x: 230, y: 115, letter: 'F', collected: false },
-            { x: 290, y: 115, letter: 'E', collected: false }
+            { x: 280, y: 115, letter: 'E', collected: false }
         ];
 
         let rightPressed = false;
@@ -401,50 +376,77 @@
             if (playerYT && typeof playerYT.playVideo === 'function') { playerYT.playVideo(); }
             document.getElementById('welcome-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
+            
+            // DESSIN IMMÉDIAT ET SÉCURISÉ DES ÉLÉMENTS DU CANVAS
+            drawGame();
             gameLoop();
         }
 
-        document.getElementById('btn-right').addEventListener('touchstart', () => rightPressed = true);
-        document.getElementById('btn-right').addEventListener('touchend', () => rightPressed = false);
-        document.getElementById('btn-left').addEventListener('touchstart', () => leftPressed = true);
-        document.getElementById('btn-left').addEventListener('touchend', () => leftPressed = false);
+        // Configuration boutons tactiles
+        const btnRight = document.getElementById('btn-right');
+        const btnLeft = document.getElementById('btn-left');
+
+        btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); rightPressed = true; });
+        btnRight.addEventListener('touchend', () => rightPressed = false);
+        btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); leftPressed = true; });
+        btnLeft.addEventListener('touchend', () => leftPressed = false);
+
+        btnRight.addEventListener('mousedown', () => rightPressed = true);
+        btnRight.addEventListener('mouseup', () => rightPressed = false);
+        btnLeft.addEventListener('mousedown', () => leftPressed = true);
+        btnLeft.addEventListener('mouseup', () => leftPressed = false);
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dessin du sol bleu néon
+            ctx.fillStyle = '#45f3ff';
+            ctx.fillRect(0, 140, canvas.width, 10);
+
+            // Dessin des lettres
+            items.forEach(item => {
+                if (!item.collected) {
+                    ctx.fillStyle = item.letter === 'X' ? '#ff4757' : '#ff007f';
+                    ctx.font = 'bold 18px sans-serif';
+                    ctx.fillText(item.letter, item.x, item.y);
+                    
+                    ctx.fillStyle = 'rgba(255, 0, 127, 0.15)';
+                    ctx.beginPath(); ctx.arc(item.x + 6, 138, 8, 0, Math.PI * 2); ctx.fill();
+                }
+            });
+
+            // Dessin du joueur (Le petit bonhomme)
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height - 5);
+            ctx.beginPath(); ctx.arc(player.x + 10, player.y - 6, 8, 0, Math.PI * 2); ctx.fill();
+        }
 
         function gameLoop() {
-            if (rightPressed && player.x < canvas.width - player.width) player.x += player.speed;
-            if (leftPressed && player.x > 0) player.x -= player.speed;
+            let moved = false;
+            if (rightPressed && player.x < canvas.width - player.width) { player.x += player.speed; moved = true; }
+            if (leftPressed && player.x > 0) { player.x -= player.speed; moved = true; }
 
             items.forEach(item => {
                 if (!item.collected && player.x + player.width > item.x && player.x < item.x + 15) {
                     item.collected = true;
                     collectedLetters[item.letter]++;
+                    moved = true;
                 }
             });
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#45f3ff';
-            ctx.fillRect(0, 140, canvas.width, 10);
-
-            items.forEach(item => {
-                if (!item.collected) {
-                    ctx.fillStyle = item.letter === 'X' ? '#ff4757' : '#ff007f';
-                    ctx.font = 'bold 16px sans-serif';
-                    ctx.fillText(item.letter, item.x, item.y);
-                    ctx.fillStyle = 'rgba(255, 0, 127, 0.2)';
-                    ctx.beginPath(); ctx.arc(item.x + 6, 138, 8, 0, Math.PI * 2); ctx.fill();
-                }
-            });
-
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.x, player.y, player.width, player.height - 5);
-            ctx.beginPath(); ctx.arc(player.x + 10, player.y - 6, 8, 0, Math.PI * 2); ctx.fill();
+            if (moved) {
+                drawGame();
+            }
 
             let allPicked = items.every(i => i.collected);
-            if (allPicked) { document.getElementById('btn-advance').style.display = 'block'; }
+            if (allPicked) { 
+                document.getElementById('btn-advance').style.display = 'block'; 
+            }
 
             requestAnimationFrame(gameLoop);
         }
 
-        // CLAVIER ET SYSTEME DE SAISIE
+        // PHASE 3 : DECODAGE
         let currentInput = [];
         
         function goToDecoder() {
@@ -490,7 +492,6 @@
 
         function checkWinningCondition() {
             if (currentInput.join('') === 'SAFE') {
-                // Fait apparaître le panneau explicatif et masque le clavier pour forcer la validation
                 document.getElementById('keyboard-container').style.display = 'none';
                 document.getElementById('acronym-panel').style.display = 'block';
             }
@@ -502,7 +503,7 @@
             initFireworks();
         }
 
-        // FEUX D'ARTIFICE
+        // SYSTEME FEUX D'ARTIFICE
         const fwCanvas = document.getElementById('fireworks-canvas');
         const fwCtx = fwCanvas.getContext('2d');
         let particles = [];
@@ -511,7 +512,7 @@
             fwCanvas.width = window.innerWidth;
             fwCanvas.height = window.innerHeight;
             animateFireworks();
-            setInterval(spawnFirework, 600);
+            setInterval(spawnFirework, 500);
         }
 
         function spawnFirework() {
